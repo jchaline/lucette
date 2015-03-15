@@ -34,6 +34,17 @@ class DameBoardTest {
   }
 
   /**
+   * Test une suite de coups et valide le resultat final
+   */
+  @Test
+  def movesMultiples(){
+
+    val board = new DameBoard()
+    val secondBoard = board.move(Coord(0,3,1,4)).move(Coord(3,6,2,5))
+
+  }
+
+  /**
    * Test qu'apres un mouvement le parent est bien enregistrer, afin de gerer les retour arrière
    */
   @Test

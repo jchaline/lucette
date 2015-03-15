@@ -11,15 +11,6 @@ class DameBoardService {
   val DIM_X = 10
   val DIM_Y = 10
 
-  /**
-   * Détermine si une coordonnées est présente sur le plateau
-   * @param x abscisse de la coordonnée
-   * @param y ordonnée de la coordonnée
-   * @return true si présent, false sinon
-   */
-  def inBoundary(x: Int, y: Int) = (x < DIM_X && x >= 0 && y < DIM_Y && y >= 0)
-
-
   def caseMatchValue(board : DameBoard, x: Int, y: Int, value: Char) = {
     board.read(x, y).equals(value)
   }
@@ -66,7 +57,7 @@ class DameBoardService {
     val deltaY =  if(onwar) 1 else -1
     val player = board.read(x,y)
 
-    if (inBoundary(x + deltaX, y + deltaY)) {
+    if (board.inBoundary(x + deltaX, y + deltaY)) {
       //si case vide
       if (board.read(x + deltaX, y + deltaY).equals(DameBoard.EMPTY)) {
         //that's a possible move
@@ -75,8 +66,9 @@ class DameBoardService {
       //else if it is not player colore, we may take the pawn
       else if (!board.read(x + deltaX, y + deltaY).equals(player)) {
         val tuple = (x + 2*deltaX , y + 2*deltaY)
+
         //vérification de la case suivante qui doit être vide
-        if (inBoundary(x + 2*deltaX , y + 2*deltaY)) {
+        if (board.inBoundary(x + 2*deltaX , y + 2*deltaY)) {
           if (board.read(x + 2*deltaX , y + 2*deltaY).equals(DameBoard.EMPTY)) {
             moves += Coord(x, y, x + 2*deltaX , y + 2*deltaY)
           }
@@ -84,6 +76,15 @@ class DameBoardService {
       }
     }
     moves
+  }
+
+  /**
+   * Parse une chaine de caractère et retourne l'objet DameBoard correspondant
+   * @param board plateau sous forme de chaine
+   * @return l'objet D
+   */
+  def fromString(board:String)={
+    new DameBoard()
   }
 
 }

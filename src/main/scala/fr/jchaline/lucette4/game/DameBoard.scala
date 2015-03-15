@@ -7,7 +7,10 @@ package fr.jchaline.lucette4.game
  * La structure de donnée des cases n'est pas immutable en elle-même mais la collection n'est pas
  * accessible publiquemement et les opérations de lecture/ecriture ne modifie pas la modifie pas
  */
-class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
+class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) {
+
+  val DIM_X = 10
+  val DIM_Y = 10
 
   /**
    * Constructeur par defaut du DameBoard, avec les cases prêtes pour une nouvelle partie
@@ -40,12 +43,12 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return le nouveau plateau suite au mouvement
    */
   private def moveWithCoord(x1:Int,y1:Int,x2:Int,y2:Int)={
-    val clone = cases.map(_.clone())
+    val clone = _cases.map(_.clone())
     val value = clone(y1)(x1)
-    clone(y1)(x1) = cases(y2)(x2)
+    clone(y1)(x1) = _cases(y2)(x2)
     clone(y2)(x2) = value
 
-    new DameBoard(clone,parents:+this)
+    new DameBoard(clone,_previous:+this)
   }
 
   /**
@@ -54,7 +57,7 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return le nouveau plateau suite au mouvement
    */
   def move(pos:Coord)={
-    moveWithCoord(pos.positions(0), pos.positions(1), pos.positions(2), pos.positions(3))
+    moveWithCoord(pos._positions(0), pos._positions(1), pos._positions(2), pos._positions(3))
   }
 
   /**
@@ -62,7 +65,7 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return le plateau précédent
    */
   def previous()={
-    parents.last
+    _previous.last
   }
 
   /**
@@ -70,7 +73,7 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return True si un précédent existe, False sinon
    */
   def hasPrevious()={
-    parents.size>0
+    _previous.size>0
   }
 
   /**
@@ -80,7 +83,7 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return la valeur de la case lue
    */
   def read(x:Int,y:Int)={
-    cases(y)(x)
+    _cases(y)(x)
   }
 
   /**
@@ -88,13 +91,22 @@ class DameBoard(cases : Array[Array[Char]], parents:List[DameBoard]) {
    * @return version String du plateau
    */
   override def toString()={
-    cases.foldLeft(""){
+    _cases.foldLeft(""){
       (x,y) => x+(if(x.toString().length>0) "\n" else "")+
         y.foldLeft(""){
           (a,b) => a+(if(a.toString().length>0) "," else "")+b
         }
     }
   }
+
+  /**
+   * Détermine si une coordonnées est présente sur le plateau
+   * @param x abscisse de la coordonnée
+   * @param y ordonnée de la coordonnée
+   * @return true si présent, false sinon
+   */
+  def inBoundary(x: Int, y: Int) = (x < DIM_X && x >= 0 && y < DIM_Y && y >= 0)
+
 }
 
 /**

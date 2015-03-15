@@ -9,10 +9,10 @@ import org.junit._
 class DameBoardServiceTest {
 
   /**
-   * Test qu'après un mouvement les cases ont bien changé de valeur comme il faut
+   * Test la recherche de coups disponibles
    */
   @Test
-  def moveTestValue(){
+  def findMovesTest(){
     val board = new DameBoard()
 
     val movesBlack = new DameBoardService().findMoves(board, DameBoard.BLACK)
@@ -21,6 +21,12 @@ class DameBoardServiceTest {
     //9 mouvement disponibles au départ du jeu pour chaque joueur
     assertTrue(movesBlack.size==9)
     assertTrue(movesWhite.size==9)
+
+    val secondBoard = board.move(Coord(0,3,1,4)).move(Coord(3,6,2,5))
+    val movesWithBlackCatch = new DameBoardService().findMoves(secondBoard, DameBoard.BLACK)
+
+    //assert find mouvement de prise simple
+    assertTrue(movesWithBlackCatch.contains(Coord(1,4,3,6)))
   }
 
 }
