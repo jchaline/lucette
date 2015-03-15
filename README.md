@@ -1,2 +1,7 @@
 # lucette
-Scala game
+Jeu de dame
+Scala
+full Immutable
+thread-safe
+negamax
+Akka
