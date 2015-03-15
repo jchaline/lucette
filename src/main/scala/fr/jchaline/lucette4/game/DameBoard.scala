@@ -50,10 +50,10 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
     clone(y1)(x1) = _cases(y2)(x2)
     clone(y2)(x2) = value
 
-    //si distance > 1
+    //si distance > 1, pris des cases intermédiaires
     val distance = Math.abs(x1 - x2)
     if(distance>1){
-
+      clone((y2+y1)/2)((x1+x2)/2) = DameBoard.EMPTY
     }
 
     new DameBoard(clone,_previous:+this)
@@ -92,8 +92,17 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * @param y ordonnée de la case à lire
    * @return la valeur de la case lue
    */
-  def read(x:Int,y:Int)={
+  def read(x:Int,y:Int):Char={
     _cases(y)(x)
+  }
+
+  /**
+   * Lecture d'une case du plateau
+   * @param coord coordonnées de la case
+   * @return valeur de la case lue
+   */
+  def read(coord:Coord):Char={
+    read(coord._positions(0), coord._positions(1))
   }
 
   /**
@@ -111,11 +120,10 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
 
   /**
    * Détermine si une coordonnées est présente sur le plateau
-   * @param x abscisse de la coordonnée
-   * @param y ordonnée de la coordonnée
+   * @param coord coordonnées du point
    * @return true si présent, false sinon
    */
-  def inBoundary(x: Int, y: Int) = (x < DIM_X && x >= 0 && y < DIM_Y && y >= 0)
+  def inBoundary(coord:Coord) = (coord._positions(0) < DIM_X && coord._positions(0) >= 0 && coord._positions(1) < DIM_Y && coord._positions(1) >= 0)
 
 }
 

@@ -30,14 +30,15 @@ class DameBoardService {
     for (row <- 0 to DIM_X - 1) {
       for (column <- 0 to DIM_Y - 1) {
 
+        val coord = Coord(column, row)
         //only the turn color can make a move
-        if (board.read(column, row).equals(player)) {
+        if (board.read(coord).equals(player)) {
 
           //check what's around the pawn.
-          moves ++= checkWard(board, column, row, true, true)
-          moves ++= checkWard(board, column, row, true, false)
-          moves ++= checkWard(board, column, row, false, false)
-          moves ++= checkWard(board, column, row, false, true)
+          moves ++= checkMoves(board, coord, true, true)
+          moves ++= checkMoves(board, coord, true, false)
+          moves ++= checkMoves(board, coord, false, false)
+          moves ++= checkMoves(board, coord, false, true)
         }
       }
     }
@@ -45,35 +46,41 @@ class DameBoardService {
   }
 
   /**
-   * Check cases autour d'une coordonnée
+   * Check cases autour d'une coordonnée,
+   * TODO: transformer en recursif pour trouver toutes les combinaisons de prise multiple,
+   * en utilisant findMoves et checkMoves avec param pour prise uniquement (pas déplacement simple)
    * @param board plateau de jeu
-   * @param x abscisse du pion a déplacer
-   * @param y ordonnée du pion a déplacer
+   * @param coord coordonnées du pion a déplacer
    * @param onwar recherche en avant ou en arrière
    * @param right recherche à droite ou à gauche
    * @return les mouvements possibles pour ce pion
    */
-  def checkWard(board:DameBoard, x:Int, y:Int, onwar:Boolean, right:Boolean)={
+  def checkMoves(board:DameBoard, coord:Coord, onwar:Boolean, right:Boolean)={
     var moves = mutable.MutableList[Coord]()
     val deltaX =  if(right) 1 else -1
     val deltaY =  if(onwar) 1 else -1
-    val player = board.read(x,y)
+    val player = board.read(coord)
 
-    if (board.inBoundary(x + deltaX, y + deltaY)) {
-      //si case vide
-      if (board.read(x + deltaX, y + deltaY).equals(DameBoard.EMPTY)) {
-        //that's a possible move
-        moves += Coord(x, y, x + deltaX, y + deltaY)
+    //case à proximité, parmis les différent sens accessible
+    val nextWard = Coord(coord.get(0) + deltaX, coord.get(1) + deltaY)
+
+    //si la case est bien sur le plateau
+    if (board.inBoundary(nextWard)) {
+
+      //si case vide, mouvement possible
+      if (board.read(nextWard).equals(DameBoard.EMPTY)) {
+        moves += coord++nextWard
       }
-      //else if it is not player colore, we may take the pawn
-      else if (!board.read(x + deltaX, y + deltaY).equals(player)) {
-        val tuple = (x + 2*deltaX , y + 2*deltaY)
+      //sinon, si case adverse, vérification de la case plus loin
+        //recherche recursive pour trouver les différents chemins
+      else if (!board.read(nextWard).equals(player)) {
+
+        //cible permettant une prise
+        val nextCatch = Coord(coord.get(0) + 2*deltaX , coord.get(1) + 2*deltaY)
 
         //vérification de la case suivante qui doit être vide
-        if (board.inBoundary(x + 2*deltaX , y + 2*deltaY)) {
-          if (board.read(x + 2*deltaX , y + 2*deltaY).equals(DameBoard.EMPTY)) {
-            moves += Coord(x, y, x + 2*deltaX , y + 2*deltaY)
-          }
+        if (board.inBoundary(nextCatch) && board.read(nextCatch).equals(DameBoard.EMPTY)) {
+          moves += coord++nextCatch
         }
       }
     }
