@@ -36,6 +36,8 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
 
   /**
    * Déplace un pion sur le plateau, de x,y en a,b
+   * Supprime les pions intermédiaires
+   * Attention, pas de controle de cohérence
    * @param x1 abscisse du point de départ
    * @param y1 ordonnée du point de départ
    * @param x2 abscisse du point d'arrivé
@@ -48,15 +50,23 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
     clone(y1)(x1) = _cases(y2)(x2)
     clone(y2)(x2) = value
 
+    //si distance > 1
+    val distance = Math.abs(x1 - x2)
+    if(distance>1){
+
+    }
+
     new DameBoard(clone,_previous:+this)
   }
 
   /**
    * Déplace un pion sur le plateau en fonction des coordonnées contenus dans le mouvement
+   * Réalise un appel chainé en cas de prise multiple ie plus de 2 points
+   * Attention, pas de controle de cohérence
    * @param pos positions du mouvement
    * @return le nouveau plateau suite au mouvement
    */
-  def move(pos:Coord)={
+  def play(pos:Coord)={
     moveWithCoord(pos._positions(0), pos._positions(1), pos._positions(2), pos._positions(3))
   }
 

@@ -18,6 +18,8 @@ class DameBoardService {
 
   /**
    * Détermine la liste de mouvements/coups possible pour un joueur sur un plateau
+   * La plupart des coups comportent 1 tuple de coordonnées x,y
+   * mais les prises multiples seront de la forme (x1,y1),(x2,y2),...,(xn,yn)
    * @param board le plateau pour la recherche de coups
    * @param player le joueur
    * @return la liste des mouvements

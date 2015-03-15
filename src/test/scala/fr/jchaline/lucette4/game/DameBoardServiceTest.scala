@@ -26,7 +26,7 @@ class DameBoardServiceTest {
     assertTrue(movesBlack.size==9)
     assertTrue(movesWhite.size==9)
 
-    val secondBoard = board.move(Coord(0,3,1,4)).move(Coord(3,6,2,5))
+    val secondBoard = board.play(Coord(0,3,1,4)).play(Coord(3,6,2,5))
     val movesWithBlackCatch = service.findMoves(secondBoard, DameBoard.BLACK)
 
     //assert find mouvement de prise simple
@@ -48,7 +48,7 @@ class DameBoardServiceTest {
     val player = if(black) DameBoard.BLACK else DameBoard.WHITE
     val moves = service.findMoves(board, player)
     if(moves.size>0 && turn<10){
-      recursirvePlay(board.move(moves(Random.nextInt(moves.size) )), !black, turn+1)
+      recursirvePlay(board.play(moves(Random.nextInt(moves.size) )), !black, turn+1)
     }
     else{
       turn

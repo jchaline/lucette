@@ -19,7 +19,7 @@ class DameBoardTest {
     assertTrue(board.read(0,3).equals('x'))
     assertTrue(board.read(1,4).equals('_'))
 
-    val moved = board.move(Coord(0,3,1,4))
+    val moved = board.play(Coord(0,3,1,4))
 
     //assert immutabilité
     assertTrue(board.read(0,3).equals('x'))
@@ -42,9 +42,9 @@ class DameBoardTest {
 
     //init du plateau et déplacement de pions pour permettre une prise simple
     val board = new DameBoard()
-    val secondBoard = board.move(Coord(0,3,1,4)).move(Coord(3,6,2,5))
+    val secondBoard = board.play(Coord(0,3,1,4)).play(Coord(3,6,2,5))
 
-    val thirdBoard = secondBoard.move(Coord(1,4,3,6))
+    val thirdBoard = secondBoard.play(Coord(1,4,3,6))
     assertTrue(thirdBoard.read(2,5).equals(DameBoard.EMPTY))
   }
 
@@ -55,7 +55,7 @@ class DameBoardTest {
   def moveTestParent(){
     val board = new DameBoard()
 
-    val moved = board.move( new Coord(0,3,1,4))
+    val moved = board.play( new Coord(0,3,1,4))
 
     assertFalse(moved.equals(board))
     assertTrue(moved.previous().equals(board))
