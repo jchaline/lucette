@@ -35,13 +35,17 @@ class DameBoardTest {
 
   /**
    * Test une suite de coups et valide le resultat final
+   * Déplacements et prise simple
    */
   @Test
   def movesMultiples(){
 
+    //init du plateau et déplacement de pions pour permettre une prise simple
     val board = new DameBoard()
     val secondBoard = board.move(Coord(0,3,1,4)).move(Coord(3,6,2,5))
 
+    val thirdBoard = secondBoard.move(Coord(1,4,3,6))
+    assertTrue(thirdBoard.read(2,5).equals(DameBoard.EMPTY))
   }
 
   /**
