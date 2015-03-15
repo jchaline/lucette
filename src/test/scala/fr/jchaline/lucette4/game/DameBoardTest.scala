@@ -1,0 +1,87 @@
+package fr.jchaline.lucette4.game
+
+import org.junit.runner.RunWith
+import org.mockito.runners.MockitoJUnitRunner
+import org.junit.Assert._
+import org.junit._
+
+@RunWith(classOf[MockitoJUnitRunner])
+class DameBoardTest {
+
+  /**
+   * Test qu'après un mouvement les cases ont bien changé de valeur comme il faut
+   */
+  @Test
+  def moveTestValue(){
+    val board = new DameBoard()
+
+    //assert value before mouvement
+    assertTrue(board.read(0,3).equals('x'))
+    assertTrue(board.read(1,4).equals('_'))
+
+    val moved = board.move(Coord(0,3,1,4))
+
+    //assert immutabilité
+    assertTrue(board.read(0,3).equals('x'))
+    assertTrue(board.read(1,4).equals('_'))
+
+    //assert mouvement sur nouveau plateau
+    assertTrue(moved.read(0,3).equals('_'))
+    assertTrue(moved.read(1,4).equals('x'))
+
+    //assert que le nouveau plateau n'est pas le même
+    assertFalse( moved.equals( board ) )
+  }
+
+  /**
+   * Test qu'apres un mouvement le parent est bien enregistrer, afin de gerer les retour arrière
+   */
+  @Test
+  def moveTestParent(){
+    val board = new DameBoard()
+
+    val moved = board.move( new Coord(0,3,1,4))
+
+    assertFalse(moved.equals(board))
+    assertTrue(moved.previous().equals(board))
+  }
+
+  /**
+   * Test la transformation en String d'un plateau
+   */
+  @Test
+  def toStringTest() {
+    val board = new DameBoard()
+
+    val boardStr = board.toString()
+    val expectedStr =
+                  "_,x,_,x,_,x,_,x,_,x\nx,_,x,_,x,_,x,_,x,_\n"+
+                  "_,x,_,x,_,x,_,x,_,x\nx,_,x,_,x,_,x,_,x,_\n"+
+                  "_,_,_,_,_,_,_,_,_,_\n"+"_,_,_,_,_,_,_,_,_,_\n"+
+                  "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_\n"+
+                  "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_"
+    assertTrue(boardStr.equals(expectedStr))
+  }
+
+  /**
+   * Test la lecture de case du plateau, des blancs, des noirs et des vides
+   */
+  @Test
+  def readTest(){
+    val board = new DameBoard()
+
+    //case en haut a gauche
+    assertTrue(board.read(0,0).equals('_'))
+    //en bas a droite
+    assertTrue(board.read(9,9).equals('_'))
+    //deuxieme case en haut a gauche
+    assertTrue(board.read(1,0).equals('x'))
+    //premiere case de la deuxieme ligne
+    assertTrue(board.read(0,1).equals('x'))
+    //premiere case avec un blanc
+    assertTrue(board.read(1,6).equals('o'))
+
+    assertTrue(board.read(0,7).equals('o'))
+  }
+
+}
