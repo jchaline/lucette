@@ -50,7 +50,7 @@ class DameBoardServiceTest {
    * @param black joueur courant (black/white)
    * @param turn numéro du tour actuel
    */
-  private def recursirvePlay(board : DameBoard, black:Boolean, turn:Int): Unit ={
+  private def recursirvePlay(board : DameBoard, black:Boolean, turn:Int):Int ={
     val player = if(black) DameBoard.BLACK else DameBoard.WHITE
     val moves = service.findMoves(board, player)
 
@@ -58,11 +58,10 @@ class DameBoardServiceTest {
       recursirvePlay(board.play(moves(Random.nextInt(moves.size) )), !black, turn+1)
     }
     else{
-      turn
       println(turn)
       println(board)
+      turn
     }
-
   }
 
 }

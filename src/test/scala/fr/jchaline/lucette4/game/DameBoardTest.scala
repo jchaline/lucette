@@ -16,18 +16,18 @@ class DameBoardTest {
     val board = new DameBoard()
 
     //assert value before mouvement
-    assertTrue(board.read(0,3).equals('x'))
-    assertTrue(board.read(1,4).equals('_'))
+    assertTrue(board.read(0,3).equals(DameBoard.BLACK))
+    assertTrue(board.read(1,4).equals(DameBoard.EMPTY))
 
     val moved = board.play(Coord(0,3,1,4))
 
     //assert immutabilité
-    assertTrue(board.read(0,3).equals('x'))
-    assertTrue(board.read(1,4).equals('_'))
+    assertTrue(board.read(0,3).equals(DameBoard.BLACK))
+    assertTrue(board.read(1,4).equals(DameBoard.EMPTY))
 
     //assert mouvement sur nouveau plateau
-    assertTrue(moved.read(0,3).equals('_'))
-    assertTrue(moved.read(1,4).equals('x'))
+    assertTrue(moved.read(0,3).equals(DameBoard.EMPTY))
+    assertTrue(moved.read(1,4).equals(DameBoard.BLACK))
 
     //assert que le nouveau plateau n'est pas le même
     assertFalse( moved.equals( board ) )
@@ -86,17 +86,17 @@ class DameBoardTest {
     val board = new DameBoard()
 
     //case en haut a gauche
-    assertTrue(board.read(0,0).equals('_'))
+    assertTrue(board.read(0,0).equals(DameBoard.EMPTY))
     //en bas a droite
-    assertTrue(board.read(9,9).equals('_'))
+    assertTrue(board.read(9,9).equals(DameBoard.EMPTY))
     //deuxieme case en haut a gauche
-    assertTrue(board.read(1,0).equals('x'))
+    assertTrue(board.read(1,0).equals(DameBoard.BLACK))
     //premiere case de la deuxieme ligne
-    assertTrue(board.read(0,1).equals('x'))
+    assertTrue(board.read(0,1).equals(DameBoard.BLACK))
     //premiere case avec un blanc
-    assertTrue(board.read(1,6).equals('o'))
+    assertTrue(board.read(1,6).equals(DameBoard.WHITE))
 
-    assertTrue(board.read(0,7).equals('o'))
+    assertTrue(board.read(0,7).equals(DameBoard.WHITE))
   }
 
 }
