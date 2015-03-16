@@ -24,7 +24,7 @@ class DameBoardService {
    * @param player le joueur
    * @return la liste des mouvements
    */
-  def findMoves(board : DameBoard, player: Char) = {
+  def findMoves(board : DameBoard, player: Char, onlyCatch:Boolean=false):List[Coord] = {
     var moves = mutable.MutableList[Coord]()
 
     for (row <- 0 to DIM_X - 1) {
@@ -35,14 +35,25 @@ class DameBoardService {
         if (board.read(coord).equals(player)) {
 
           //check what's around the pawn.
-          moves ++= checkMoves(board, coord, true, true)
-          moves ++= checkMoves(board, coord, true, false)
-          moves ++= checkMoves(board, coord, false, false)
-          moves ++= checkMoves(board, coord, false, true)
+          moves ++= checkAllMoves(board, coord, onlyCatch)
         }
       }
     }
     moves.toList
+  }
+
+  /**
+   * Recherche de mouvement autour d'un point
+   * @param board plateau de jeu
+   * @param coord coordonnées du pion a déplacer
+   * @param onlyCatch recherche seulement les prises ou également les déplacements simple
+   * @return les mouvements possibles pour ce pion
+   */
+  def checkAllMoves(board : DameBoard, coord:Coord, onlyCatch:Boolean):List[Coord]={
+    checkMoves(board, coord, true, true, onlyCatch) ++
+    checkMoves(board, coord, true, false, onlyCatch) ++
+    checkMoves(board, coord, false, false, onlyCatch) ++
+    checkMoves(board, coord, false, true, onlyCatch)
   }
 
   /**
@@ -53,10 +64,11 @@ class DameBoardService {
    * @param coord coordonnées du pion a déplacer
    * @param onwar recherche en avant ou en arrière
    * @param right recherche à droite ou à gauche
+   * @param onlyCatch recherche seulement les prises ou également les déplacements simple
    * @return les mouvements possibles pour ce pion
    */
-  def checkMoves(board:DameBoard, coord:Coord, onwar:Boolean, right:Boolean)={
-    var moves = mutable.MutableList[Coord]()
+  def checkMoves(board:DameBoard, coord:Coord, onwar:Boolean, right:Boolean, onlyCatch:Boolean):List[Coord]={
+    val emptyList = List[Coord]()
     val deltaX =  if(right) 1 else -1
     val deltaY =  if(onwar) 1 else -1
     val player = board.read(coord)
@@ -66,10 +78,10 @@ class DameBoardService {
 
     //si la case est bien sur le plateau
     if (board.inBoundary(nextWard)) {
-
       //si case vide, mouvement possible
       if (board.read(nextWard).equals(DameBoard.EMPTY)) {
-        moves += coord++nextWard
+        val move = coord++nextWard
+        List(move)
       }
       //sinon, si case adverse, vérification de la case plus loin
         //recherche recursive pour trouver les différents chemins
@@ -80,11 +92,31 @@ class DameBoardService {
 
         //vérification de la case suivante qui doit être vide
         if (board.inBoundary(nextCatch) && board.read(nextCatch).equals(DameBoard.EMPTY)) {
-          moves += coord++nextCatch
+          val move = coord++nextCatch
+
+          //à partir de là, recherche des autres mouvement de prise disponibles, recursivité
+          val otherCatch = checkAllMoves(board.play(move), nextCatch, true)
+
+          //si d'autres prises possibles, concatenations
+          if(otherCatch.size>0){
+            List(move)
+          }
+          //sinon, enregistrement de la prise
+          else{
+            List(move)
+          }
+        }
+        else{
+          emptyList
         }
       }
+      else{
+        emptyList
+      }
     }
-    moves
+    else{
+      emptyList
+    }
   }
 
   /**
