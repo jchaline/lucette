@@ -13,7 +13,7 @@ class DameBoardServiceTest {
   val service = new DameBoardService()
 
   /**
-   * Test la recherche de coups disponibles
+   * Test la recherche de coups simples disponibles
    */
   @Test
   def findMovesTest(){
@@ -31,6 +31,22 @@ class DameBoardServiceTest {
 
     //assert find mouvement de prise simple
     assertTrue(movesWithBlackCatch.contains(Coord(1,4,3,6)))
+  }
+
+  /**
+   * Test la recherche de coups complexes disponibles
+   */
+  @Test
+  def findMovesComplexesTest(){
+    val board = new DameBoard()
+
+    val secondBoard = board.play(Coord(8,3,7,4)).play(Coord(3,6,2,5))
+                      .play(Coord(6,3,7,4)).play(Coord(2,5,1,4))
+                      .play(Coord(4,3,5,4)).play(Coord(4,7,3,6))
+    val movesWithComplexeCatch = service.findMoves(secondBoard, DameBoard.BLACK)
+
+    //assert find mouvement de prise simple
+    assertTrue(movesWithComplexeCatch.contains(Coord(0,3,2,5,2,5,4,7,4,7,6,5)))
   }
 
   /**

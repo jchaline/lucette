@@ -80,8 +80,13 @@ class DameBoardService {
     if (board.inBoundary(nextWard)) {
       //si case vide, mouvement possible
       if (board.read(nextWard).equals(DameBoard.EMPTY)) {
-        val move = coord++nextWard
-        List(move)
+        if(!onlyCatch){
+          val move = coord++nextWard
+          List(move)
+        }
+        else{
+          List[Coord]()
+        }
       }
       //sinon, si case adverse, vérification de la case plus loin
         //recherche recursive pour trouver les différents chemins
@@ -95,11 +100,11 @@ class DameBoardService {
           val move = coord++nextCatch
 
           //à partir de là, recherche des autres mouvement de prise disponibles, recursivité
-          val otherCatch = checkAllMoves(board.play(move), nextCatch, true)
+          val otherCatchList = checkAllMoves(board.play(move), nextCatch, true)
 
           //si d'autres prises possibles, concatenations
-          if(otherCatch.size>0){
-            List(move)
+          if(otherCatchList.size>0){
+            otherCatchList.map(move++_)
           }
           //sinon, enregistrement de la prise
           else{
