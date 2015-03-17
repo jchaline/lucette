@@ -59,6 +59,8 @@ class DameBoardTest {
     assertTrue(secondBoard.read(3,6).equals(DameBoard.EMPTY))
   }
 
+
+
   /**
    * Test une suite de coups et valide le resultat final
    * Déplacements et prise simple
@@ -102,6 +104,24 @@ class DameBoardTest {
                   "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_\n"+
                   "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_"
     assertTrue(boardStr.equals(expectedStr))
+  }
+
+  @Test
+  def fromStringTest(){
+    val strBoard =
+      "_,x,_,x,_,x,_,x,_,x\nx,_,x,_,x,_,x,_,x,_\n"+
+      "_,x,_,x,_,x,_,x,_,x\nx,_,x,_,x,_,x,_,x,_\n"+
+      "_,_,_,_,_,_,_,_,_,_\n"+"_,_,_,_,_,_,_,_,_,_\n"+
+      "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_\n"+
+      "_,o,_,o,_,o,_,o,_,o\no,_,o,_,o,_,o,_,o,_"
+    val boardFromString = new DameBoard(strBoard)
+    val board = new DameBoard()
+
+    for(y <- 0 to 9){
+      for(x <- 0 to 0){
+        board.read(x,y).equals(boardFromString.read(x,y))
+      }
+    }
   }
 
   /**

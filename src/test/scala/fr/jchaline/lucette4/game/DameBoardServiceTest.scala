@@ -71,7 +71,7 @@ class DameBoardServiceTest {
     val moves = service.findMoves(board, player)
 
     if(moves.size>0 && turn<1000){
-      recursirvePlay(board.play(moves(Random.nextInt(moves.size) )), !black, turn+1)
+      recursirvePlay(board.play(moves(Random.nextInt(moves.size))), !black, turn+1)
     }
     else{
       println(turn)

@@ -125,12 +125,11 @@ class DameBoardService {
   }
 
   /**
-   * Parse une chaine de caractère et retourne l'objet DameBoard correspondant
-   * @param board plateau sous forme de chaine
-   * @return l'objet D
+   * Evalue la valeur d'un plateau
+   * @param board plateau à évaluer
+   * @return la valeur
    */
-  def fromString(board:String)={
-    new DameBoard()
+  def evaluate(board:DameBoard)={
+    0
   }
-
 }

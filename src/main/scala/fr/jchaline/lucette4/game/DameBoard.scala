@@ -49,6 +49,15 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
   }
 
   /**
+   * Parse une chaine de caractère et retourne l'objet DameBoard correspondant
+   * @param board plateau sous forme de chaine
+   * @return l'objet D
+   */
+  def this(board:String)={
+    this()
+  }
+
+  /**
    * Déplace un pion sur le plateau, de x,y en a,b
    * Supprime les pions intermédiaires
    * Attention, pas de controle de cohérence
@@ -170,6 +179,8 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * @return true si présent, false sinon
    */
   def inBoundary(coord:Coord) = (coord._positions(0) < DIM_X && coord._positions(0) >= 0 && coord._positions(1) < DIM_Y && coord._positions(1) >= 0)
+
+
 
 }
 
