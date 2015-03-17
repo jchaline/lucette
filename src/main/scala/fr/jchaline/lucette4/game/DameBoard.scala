@@ -6,6 +6,20 @@ package fr.jchaline.lucette4.game
  *
  * La structure de donnée des cases n'est pas immutable en elle-même mais la collection n'est pas
  * accessible publiquemement et les opérations de lecture/ecriture ne modifie pas la modifie pas
+ *
+ * Représentation avec coordonnés :
+ *
+ * 0 _ x _ x _ x _ x _ x
+ * 1 x _ x _ x _ x _ x _
+ * 2 _ x _ x _ x _ x _ x
+ * 3 x _ x _ x _ x _ x _
+ * 4 _ _ _ _ _ _ _ _ _ _
+ * 5 _ _ _ _ _ _ _ _ _ _
+ * 6 _ o _ o _ o _ o _ o
+ * 7 o _ o _ o _ o _ o _
+ * 8 _ o _ o _ o _ o _ o
+ * 9 o _ o _ o _ o _ o _
+ * _ 0 1 2 3 4 5 6 7 8 9
  */
 class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) {
 
@@ -116,6 +130,23 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
           (a,b) => a+(if(a.toString().length>0) "," else "")+b
         }
     }
+  }
+
+  /**
+   * Fonction d'affichage du plateau avec indication sur les lignes/colonnes
+   * @return le plateau au format String, plus joli que le toString()
+   */
+  def niceString()={
+    var nice = ""
+    for(y <- 0 to 9){
+      nice = nice + y
+      for(x <- 0 to 9){
+        nice = nice + " " + read(x,y)
+      }
+      nice = nice + '\n'
+    }
+    nice = nice + "_ 0 1 2 3 4 5 6 7 8 9"
+    nice
   }
 
   /**
