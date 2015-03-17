@@ -14,7 +14,8 @@ class BotTest {
     val board = new DameBoard()
     val player = DameBoard.BLACK
 
-    val bestMove = new Bot().bestMove(board, player, Int.MaxValue, Int.MinValue)
+    val alicia = new Bot()
+    val bestMove = alicia.bestMove(board, player, Int.MaxValue, Int.MinValue)
     assertNotNull(bestMove)
   }
 
