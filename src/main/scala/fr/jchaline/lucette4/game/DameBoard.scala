@@ -52,16 +52,32 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * Déplace un pion sur le plateau, de x,y en a,b
    * Supprime les pions intermédiaires
    * Attention, pas de controle de cohérence
+   * @param posList liste des déplacements à effectuer
+   * @param cases plateau avant le déplacement
+   * @return le nouveau plateau suite au mouvement
+   */
+  private def moveWithCoord(posList:List[Coord], cases : Array[Array[Char]]):DameBoard={
+    if(posList.size>0){
+      moveWithCoord(posList.slice(1,posList.size),moveWithPos(cases, posList(0)._positions(0), posList(0)._positions(1), posList(0)._positions(2), posList(0)._positions(3)))
+    }
+    else{
+      new DameBoard(cases, _previous:+this)
+    }
+  }
+
+  /**
+   * Effectue le déplacement d'un pion sur le plateau
+   * @param cases plateau avant déplacement, non modifié
    * @param x1 abscisse du point de départ
    * @param y1 ordonnée du point de départ
    * @param x2 abscisse du point d'arrivé
    * @param y2 ordonnée du point d'arrivé
-   * @return le nouveau plateau suite au mouvement
+   * @return nouvelles instances de cases avec le déplacement effectué et la prise si besoin
    */
-  private def moveWithCoord(x1:Int,y1:Int,x2:Int,y2:Int)={
-    val clone = _cases.map(_.clone())
+  private def moveWithPos(cases : Array[Array[Char]], x1:Int,y1:Int,x2:Int,y2:Int)={
+    val clone = cases.map(_.clone())
     val value = clone(y1)(x1)
-    clone(y1)(x1) = _cases(y2)(x2)
+    clone(y1)(x1) = cases(y2)(x2)
     clone(y2)(x2) = value
 
     //si distance > 1, pris des cases intermédiaires
@@ -69,8 +85,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
     if(distance>1){
       clone((y2+y1)/2)((x1+x2)/2) = DameBoard.EMPTY
     }
-
-    new DameBoard(clone,_previous:+this)
+    clone
   }
 
   /**
@@ -81,7 +96,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * @return le nouveau plateau suite au mouvement
    */
   def play(pos:Coord)={
-    moveWithCoord(pos._positions(0), pos._positions(1), pos._positions(2), pos._positions(3))
+    moveWithCoord(pos.split(), _cases)
   }
 
   /**

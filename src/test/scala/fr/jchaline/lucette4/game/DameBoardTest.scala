@@ -34,6 +34,32 @@ class DameBoardTest {
   }
 
   /**
+   * Test d'un déplacement complexe, multiples prises
+   */
+  @Test
+  def moveComplexeTest(){
+    val initCases = Array(
+      Array('_','x','_','x','_','x','_','x','_','x'),
+      Array('x','_','x','_','x','_','x','_','x','_'),
+      Array('_','x','_','x','_','x','_','x','_','x'),
+      Array('x','_','x','_','x','_','x','_','x','_'),
+      Array('_','o','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','o','_','o','_','o','_','o','_','o'),
+      Array('o','_','o','_','_','_','o','_','o','_'),
+      Array('_','o','_','o','_','o','_','o','_','o'),
+      Array('o','_','o','_','o','_','o','_','o','_')
+    )
+
+    val board = new DameBoard(initCases, List[DameBoard]())
+    val secondBoard = board.play(Coord(0,3,2,5,2,5,4,7,4,7,6,5))
+
+    assertTrue(secondBoard.read(6,5).equals(DameBoard.BLACK))
+    assertTrue(secondBoard.read(1,4).equals(DameBoard.EMPTY))
+    assertTrue(secondBoard.read(3,6).equals(DameBoard.EMPTY))
+  }
+
+  /**
    * Test une suite de coups et valide le resultat final
    * Déplacements et prise simple
    */
