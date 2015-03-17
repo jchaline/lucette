@@ -48,6 +48,15 @@ class Coord(val _positions : Int*) {
     }
     case _ => false
   }
+
+  /**
+   * Sépare l'objet en différents objet en groupant les indices par 4 (par défaut) ou par le nombre fourni
+   * @param nb nombre d'élément par groupe du split
+   * @return liste des groupes de coordonnées
+   */
+  def split(nb:Int=4):List[Coord]={
+    _positions.grouped(nb).toList.map(Coord(_:_*))
+  }
 }
 
 /**
