@@ -12,7 +12,7 @@ class DameBoardTest {
    * Test qu'après un mouvement les cases ont bien changé de valeur comme il faut
    */
   @Test
-  def moveTestValue(){
+  def playSimpleMove(){
     val board = new DameBoard()
 
     //assert value before mouvement
@@ -37,7 +37,7 @@ class DameBoardTest {
    * Test d'un déplacement complexe, multiples prises
    */
   @Test
-  def moveComplexeTest(){
+  def playComplexeCatch(){
     val initCases = Array(
       Array('_','x','_','x','_','x','_','x','_','x'),
       Array('x','_','x','_','x','_','x','_','x','_'),
@@ -64,7 +64,7 @@ class DameBoardTest {
    * Déplacements et prise simple
    */
   @Test
-  def movesMultiples(){
+  def playMultipleMove(){
 
     //init du plateau et déplacement de pions pour permettre une prise simple
     val board = new DameBoard()
@@ -78,7 +78,7 @@ class DameBoardTest {
    * Test qu'apres un mouvement le parent est bien enregistrer, afin de gerer les retour arrière
    */
   @Test
-  def moveTestParent(){
+  def playTestParent(){
     val board = new DameBoard()
 
     val moved = board.play( new Coord(0,3,1,4))
