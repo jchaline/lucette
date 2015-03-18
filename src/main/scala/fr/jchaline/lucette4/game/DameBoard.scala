@@ -188,7 +188,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
  * Compagnion object with constant values
  */
 object DameBoard{
-  def EMPTY = '_'
-  def BLACK = 'x'
-  def WHITE = 'o'
+  val EMPTY = '_'
+  val BLACK = 'x'
+  val WHITE = 'o'
 }

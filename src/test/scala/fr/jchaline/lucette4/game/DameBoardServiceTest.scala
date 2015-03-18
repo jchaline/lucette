@@ -10,7 +10,11 @@ import scala.util.Random
 @RunWith(classOf[MockitoJUnitRunner])
 class DameBoardServiceTest {
 
-  val service = new DameBoardService()
+  var service = new DameBoardService()
+
+  def setUp(){
+    service = new DameBoardService()
+  }
 
   /**
    * Test la recherche de coups simples disponibles
@@ -47,6 +51,30 @@ class DameBoardServiceTest {
 
     //assert find mouvement de prise simple
     assertTrue(movesWithComplexeCatch.contains(Coord(0,3,2,5,2,5,4,7,4,7,6,5)))
+  }
+
+  /**
+   * Test l'évaluation d'un plateau
+   */
+  @Test
+  def evaluateTest(){
+    val board = new DameBoard()
+    assertTrue(service.evaluate(board)==0)
+
+    val initCases = Array(
+      Array('_','x','_','x','_','x','_','x','_','x'),
+      Array('x','_','x','_','x','_','x','_','x','_'),
+      Array('_','x','_','x','_','x','_','x','_','x'),
+      Array('_','_','x','_','x','_','x','_','x','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','x','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_')
+    )
+    val boardBlack = new DameBoard(initCases, List[DameBoard]())
+    assertTrue(service.evaluate(boardBlack)==20)
   }
 
   /**

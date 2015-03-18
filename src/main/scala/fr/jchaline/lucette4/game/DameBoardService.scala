@@ -126,10 +126,24 @@ class DameBoardService {
 
   /**
    * Evalue la valeur d'un plateau
+   * Plus la valeur est elevé, plus elle avantage le joueur NOIR
+   * Plus la valeur est faible, plus elle avantage le joueur BLANC
    * @param board plateau à évaluer
    * @return la valeur
    */
   def evaluate(board:DameBoard)={
-    0
+    var value = 0
+    for (x <- 0 to DIM_X - 1) {
+      for (y <- 0 to DIM_Y - 1) {
+        val read = board.read(x,y)
+        val delta = read match {
+          case DameBoard.BLACK => 1
+          case DameBoard.WHITE => -1
+          case _ => 0
+        }
+        value = value + delta
+      }
+    }
+    value
   }
 }
