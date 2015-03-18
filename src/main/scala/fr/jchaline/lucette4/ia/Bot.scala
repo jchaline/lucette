@@ -9,7 +9,7 @@ class Bot {
   val service = new DameBoardService()
 
   /**
-   * Détermine quel est le meilleur mouvement parti ceux disponibles,
+   * Détermine quel est le meilleur mouvement parmi ceux disponibles,
    * à l'aide de l'algorithme negamax
    * @param board plateau à évaluer
    * @param player joueur concerné par l'évaluation
@@ -21,7 +21,6 @@ class Bot {
     val moves = service.findMoves(board, player)
     val boardValue = service.evaluate(board)
 
-    println("Board value : " + boardValue)
     moves(Random.nextInt(moves.size))
   }
 
