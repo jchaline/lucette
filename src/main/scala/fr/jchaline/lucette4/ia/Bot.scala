@@ -24,4 +24,42 @@ class Bot {
     moves(Random.nextInt(moves.size))
   }
 
+  /**
+   * Implémentation de negamax
+   * @param node noeud actuellement évalué
+   * @param depth profondeur maximum de recherche sur le noeud courant
+   * @param α paramètre alpha de negamax
+   * @param β paramètre beta de negamax
+   * @param player joueur concerné par l'évaluation du noeud
+   * @return valeur du noeud
+   */
+  def solve(node:DameBoard, depth:Int, α:Int, β:Int, player:Char):Int={
+    //Détermination de l'adversaire du joueur
+    val otherPlayer = player match{
+      case DameBoard.BLACK => DameBoard.WHITE
+      case DameBoard.WHITE => DameBoard.BLACK
+    }
+
+    //liste des mouvement disponibles sur le noeud courant
+    val moves = service.findMoves(node, otherPlayer)
+
+    //recherche sur noeuds suivants si possible
+    if (depth == 0 || moves.isEmpty ) {
+      service.evaluate(node)
+    }
+    else{
+      var αLooped = α
+      var bestValue = Int.MinValue
+
+      //évaluation récursive des noeuds suivants
+      for(move <- moves; if(αLooped < β)){
+        val nextNode = node.play(move)
+
+        val evaluation = -solve(nextNode, depth - 1, -β, -αLooped, otherPlayer)
+        bestValue = math.max( bestValue, evaluation )
+        αLooped = math.max( αLooped, evaluation )
+      }
+      bestValue
+    }
+  }
 }
