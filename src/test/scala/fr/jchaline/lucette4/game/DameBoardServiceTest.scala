@@ -103,7 +103,7 @@ class DameBoardServiceTest {
       Array('_','_','_','_','_','_','_','_','_','_'),
       Array('_','_','_','_','_','_','_','_','_','_')
     )
-    val boardMixe = new DameBoard(initCasesWhite, List[DameBoard]())
+    val boardMixe = new DameBoard(initCasesMixes, List[DameBoard]())
     assertTrue(service.evaluate(boardMixe) == -1)
   }
 
