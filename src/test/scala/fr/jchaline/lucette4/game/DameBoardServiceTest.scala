@@ -61,7 +61,7 @@ class DameBoardServiceTest {
     val board = new DameBoard()
     assertTrue(service.evaluate(board)==0)
 
-    val initCases = Array(
+    val initCasesBlack = Array(
       Array('_','x','_','x','_','x','_','x','_','x'),
       Array('x','_','x','_','x','_','x','_','x','_'),
       Array('_','x','_','x','_','x','_','x','_','x'),
@@ -73,8 +73,38 @@ class DameBoardServiceTest {
       Array('_','_','_','_','_','_','_','_','_','_'),
       Array('_','_','_','_','_','_','_','_','_','_')
     )
-    val boardBlack = new DameBoard(initCases, List[DameBoard]())
+    val boardBlack = new DameBoard(initCasesBlack, List[DameBoard]())
     assertTrue(service.evaluate(boardBlack)==20)
+
+    val initCasesWhite = Array(
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','o','_','_','o','_','_','_'),
+      Array('_','_','o','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','o','_','o','_','o','_','o','_','_'),
+      Array('_','_','o','_','o','_','o','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_')
+    )
+    val boardWhite = new DameBoard(initCasesWhite, List[DameBoard]())
+    assertTrue(service.evaluate(boardWhite) == -10)
+
+    val initCasesMixes = Array(
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','x','_','o','_','_','o','_','_','_'),
+      Array('_','_','o','_','_','x','_','_','_','_'),
+      Array('_','_','_','_','o','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','o','_','x','_','o','_','_'),
+      Array('x','_','x','_','x','_','o','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_'),
+      Array('_','_','_','_','_','_','_','_','_','_')
+    )
+    val boardMixe = new DameBoard(initCasesWhite, List[DameBoard]())
+    assertTrue(service.evaluate(boardMixe) == -1)
   }
 
   /**
