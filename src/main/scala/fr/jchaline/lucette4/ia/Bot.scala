@@ -19,7 +19,7 @@ class Bot {
    */
   def bestMove(board:DameBoard, player:Char, alpha:Int, beta:Int):Coord={
     val moves = service.findMoves(board, player)
-    val boardValue = service.evaluate(board)
+    val boardValue = service.evaluate(board, player)
 
     moves(Random.nextInt(moves.size))
   }
@@ -45,19 +45,22 @@ class Bot {
 
     //recherche sur noeuds suivants si possible
     if (depth == 0 || moves.isEmpty ) {
-      service.evaluate(node)
+      service.evaluate(node, player)
     }
     else{
       var αLooped = α
       var bestValue = Int.MinValue
 
       //évaluation récursive des noeuds suivants
-      for(move <- moves; if(αLooped < β)){
+      for(move <- moves){
         val nextNode = node.play(move)
 
         val evaluation = -solve(nextNode, depth - 1, -β, -αLooped, otherPlayer)
         bestValue = math.max( bestValue, evaluation )
         αLooped = math.max( αLooped, evaluation )
+
+        //TODO:profiter de l'élaguage alpha beta avec arrêt de la boucle
+
       }
       bestValue
     }

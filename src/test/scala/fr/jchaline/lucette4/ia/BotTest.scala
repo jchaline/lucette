@@ -43,7 +43,7 @@ class BotTest {
     val player = DameBoard.BLACK
 
     //compute value with negamax
-    val value = alicia.solve(board, 10, Int.MaxValue, Int.MinValue, player)
+    val value = alicia.solve(board, 3, Int.MaxValue, Int.MinValue, player)
 
     assertTrue(value == 0)
   }

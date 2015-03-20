@@ -59,7 +59,8 @@ class DameBoardServiceTest {
   @Test
   def evaluateTest(){
     val board = new DameBoard()
-    assertTrue(service.evaluate(board)==0)
+    assertTrue(service.evaluate(board, DameBoard.BLACK)==0)
+    assertTrue(service.evaluate(board, DameBoard.WHITE)==0)
 
     val initCasesBlack = Array(
       Array('_','x','_','x','_','x','_','x','_','x'),
@@ -74,7 +75,8 @@ class DameBoardServiceTest {
       Array('_','_','_','_','_','_','_','_','_','_')
     )
     val boardBlack = new DameBoard(initCasesBlack, List[DameBoard]())
-    assertTrue(service.evaluate(boardBlack)==20)
+    assertTrue(service.evaluate(boardBlack, DameBoard.BLACK) == 20)
+    assertTrue(service.evaluate(boardBlack, DameBoard.WHITE) == -20)
 
     val initCasesWhite = Array(
       Array('_','_','_','_','_','_','_','_','_','_'),
@@ -89,7 +91,8 @@ class DameBoardServiceTest {
       Array('_','_','_','_','_','_','_','_','_','_')
     )
     val boardWhite = new DameBoard(initCasesWhite, List[DameBoard]())
-    assertTrue(service.evaluate(boardWhite) == -10)
+    assertTrue(service.evaluate(boardWhite, DameBoard.BLACK) == -10)
+    assertTrue(service.evaluate(boardWhite, DameBoard.WHITE) == 10)
 
     val initCasesMixes = Array(
       Array('_','_','_','_','_','_','_','_','_','_'),
@@ -104,7 +107,8 @@ class DameBoardServiceTest {
       Array('_','_','_','_','_','_','_','_','_','_')
     )
     val boardMixe = new DameBoard(initCasesMixes, List[DameBoard]())
-    assertTrue(service.evaluate(boardMixe) == -1)
+    assertTrue(service.evaluate(boardMixe, DameBoard.BLACK) == -1)
+    assertTrue(service.evaluate(boardMixe, DameBoard.WHITE) == 1)
   }
 
   /**

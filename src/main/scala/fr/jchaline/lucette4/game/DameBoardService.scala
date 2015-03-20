@@ -131,19 +131,31 @@ class DameBoardService {
    * @param board plateau à évaluer
    * @return la valeur
    */
-  def evaluate(board:DameBoard)={
+  def evaluate(board:DameBoard, player:Char)={
     var value = 0
+    //analyse des lignes
     for (x <- 0 to DIM_X - 1) {
+      //analyse des colonnes de chaque ligne
       for (y <- 0 to DIM_Y - 1) {
-        val read = board.read(x,y)
-        val delta = read match {
-          case DameBoard.BLACK => 1
-          case DameBoard.WHITE => -1
-          case _ => 0
-        }
-        value = value + delta
+        value = value + evaluateWard(board, x, y, player)
       }
     }
     value
+  }
+
+  /**
+   * Evaluation d'une case du plateau
+   * @param board plateau de jeu
+   * @param x abscisse de la case
+   * @param y ordonnée de la case
+   * @param player joueur concerné par l'évaluation
+   * @return la valeur de la case sur ce plateau
+   */
+  def evaluateWard(board:DameBoard, x:Int, y:Int, player:Char)={
+    board.read(x,y) match {
+      case `player` => 1
+      case DameBoard.EMPTY => 0
+      case _ => -1
+    }
   }
 }
