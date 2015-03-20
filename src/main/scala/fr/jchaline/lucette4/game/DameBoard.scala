@@ -104,7 +104,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * @param pos positions du mouvement
    * @return le nouveau plateau suite au mouvement
    */
-  def play(pos:Coord)={
+  def play(pos:Coord):DameBoard={
     moveWithCoord(pos.split(), _cases)
   }
 

@@ -25,7 +25,7 @@ class Bot {
   }
 
   /**
-   * Implémentation de negamax
+   * Implémentation de negamax pour résoudre les meilleurs mouvements
    * @param node noeud actuellement évalué
    * @param depth profondeur maximum de recherche sur le noeud courant
    * @param α paramètre alpha de negamax
@@ -64,5 +64,55 @@ class Bot {
       }
       bestValue
     }
+  }
+
+  /**
+   * Implémentation de min max
+   * @return valeur du noeud courant
+   */
+  def minmax(node:DameBoard, depth:Int,maximizingPlayer:Boolean, player:Char,
+             heuristic:(DameBoard, Char) => Int,
+             children:(DameBoard, Char) => List[DameBoard]):Int= {
+
+    //détermination du joueur adverse
+    val otherPlayer = player match{
+      case DameBoard.BLACK => DameBoard.WHITE
+      case DameBoard.WHITE => DameBoard.BLACK
+    }
+
+    //cas d'arrêt : plus de fils ou limite technique
+    if (depth == 0 || children(node, otherPlayer).isEmpty) {
+      heuristic(node, player)
+    }
+    //deux cas, chercher la valeur la plus grande ou la plus faible
+    //TODO:bug car doublon entre le role de maximizing et l'alternance du joueur
+    //problème : besoin de savoir qui joue pour avoir sa liste de coup possible
+    //solution : est-ce qu'il faut faire porter le tour du joueur par le plateau ?
+    //ainsi la recherche de coup et l'évaluation n'auront qu'un parametre, le plateau
+    //cohérent dans la plupart des jeux de plateaux ?
+    else if (maximizingPlayer) {
+      var bestValue = Int.MinValue
+      for (child <- children(node, otherPlayer)) {
+        val value = minmax(child, depth - 1, !maximizingPlayer, otherPlayer, heuristic, children)
+        bestValue = math.max(bestValue, value)
+      }
+      bestValue
+    }
+    else {
+      var bestValue = Int.MaxValue
+      for (child <- children(node, otherPlayer)) {
+        val value = minmax(child, depth - 1, !maximizingPlayer, otherPlayer, heuristic, children)
+        bestValue = math.min(bestValue, value)
+      }
+      bestValue
+    }
+  }
+
+  /**
+   * Implémentation de min max avec élaguage alpha beta
+   * @return
+   */
+  def alphaBeta():Int={
+    0
   }
 }

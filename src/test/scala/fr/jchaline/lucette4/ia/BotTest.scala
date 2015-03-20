@@ -37,7 +37,7 @@ class BotTest {
    * Evaluation d'un plateau en tant que noeud et en fonction de ses sous noeuds via negamax
    */
   @Test
-  def negaMaxTest(){
+  def solveTest(){
     val board = new DameBoard()
 
     val player = DameBoard.BLACK
@@ -48,4 +48,18 @@ class BotTest {
     assertTrue(value == 0)
   }
 
+  /**
+   * Test l'implémentation de minmax
+   */
+  @Test
+  def minmaxTest(): Unit ={
+    val board = new DameBoard()
+    val player = DameBoard.BLACK
+
+    val value = alicia.minmax(board, 3, true, player,
+      (b:DameBoard, p:  Char) => new DameBoardService().evaluate(b, p),
+      (b:DameBoard, p:Char)=> new DameBoardService().findMoves(b,p).map{b.play(_)})
+
+    assertTrue(value == 0)
+  }
 }
