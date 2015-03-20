@@ -26,7 +26,10 @@ class BotTest {
 
     val alicia = new Bot()
     val moves = service.findMoves(board)
-    val bestMove = alicia.bestMove(board, player, Int.MaxValue, Int.MinValue)
+    val bestMove = alicia.bestMove(board, 3,
+      (b:DameBoard) => new DameBoardService().evaluate(b),
+      (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)})
+
     if(!moves.isEmpty){
       assertNotNull(bestMove)
       moves.contains(bestMove)
@@ -49,14 +52,14 @@ class BotTest {
   }
 
   /**
-   * Test l'implémentation de minmax
+   * Test l'implémentation de minimax
    */
   @Test
-  def minmaxTest(): Unit ={
+  def minimaxTest(): Unit ={
     val board = new DameBoard()
     val player = DameBoard.BLACK
 
-    val value = alicia.minmax(board, 3, true,
+    val value = alicia.minimax(board, 3, true,
       (b:DameBoard) => new DameBoardService().evaluate(b),
       (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)})
 

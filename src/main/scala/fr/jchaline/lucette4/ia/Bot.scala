@@ -11,17 +11,22 @@ class Bot {
   /**
    * Détermine quel est le meilleur mouvement parmi ceux disponibles,
    * à l'aide de l'algorithme negamax
-   * @param board plateau à évaluer
-   * @param player joueur concerné par l'évaluation
-   * @param alpha paramètre alpha, utile à l'évaluation negamax
-   * @param beta paramètre beta, utile à l'évaluation negamax
+   * @param node plateau à évaluer
    * @return le meilleur mouvement
    */
-  def bestMove(board:DameBoard, player:Char, alpha:Int, beta:Int):Coord={
-    val moves = service.findMoves(board)
-    val boardValue = service.evaluate(board)
+  def bestMove(node:DameBoard, depth:Int,
+               heuristic:(DameBoard) => Int,
+               childrens:(DameBoard) => List[DameBoard]):Coord={
 
-    moves(Random.nextInt(moves.size))
+    service.findMoves(node)
+      .map{move =>
+        move -> minimax(
+            node.play(move),depth,
+            !DameBoard.WHITE.equals(node._player),
+            heuristic, childrens)
+        }
+      .sortWith(_._2 > _._2)
+      .last._1
   }
 
   /**
@@ -61,30 +66,34 @@ class Bot {
   }
 
   /**
-   * Implémentation de min max
+   * Implémentation de minimax
+   * @param node noeud courant évalué
+   * @param depth profondeur maximum d'évaluation
+   * @param heuristic fonction d'évaluation d'un noeud
+   * @param childrens fonction permettant d'obtenir la liste des noeuds fils
    * @return valeur du noeud courant
    */
-  def minmax(node:DameBoard, depth:Int,maximizingPlayer:Boolean,
+  def minimax(node:DameBoard, depth:Int,maximizingScore:Boolean,
              heuristic:(DameBoard) => Int,
-             children:(DameBoard) => List[DameBoard]):Int= {
+             childrens:(DameBoard) => List[DameBoard]):Int= {
 
     //cas d'arrêt : plus de fils ou limite technique
-    if (depth == 0 || children(node).isEmpty) {
+    if (depth == 0 || childrens(node).isEmpty) {
       heuristic(node)
     }
     //deux cas, chercher la valeur la plus grande ou la plus faible
-    else if (maximizingPlayer) {
+    else if (maximizingScore) {
       var bestValue = Int.MinValue
-      for (child <- children(node)) {
-        val value = minmax(child, depth - 1, !maximizingPlayer, heuristic, children)
+      for (child <- childrens(node)) {
+        val value = minimax(child, depth - 1, !maximizingScore, heuristic, childrens)
         bestValue = math.max(bestValue, value)
       }
       bestValue
     }
     else {
       var bestValue = Int.MaxValue
-      for (child <- children(node)) {
-        val value = minmax(child, depth - 1, !maximizingPlayer, heuristic, children)
+      for (child <- childrens(node)) {
+        val value = minimax(child, depth - 1, !maximizingScore, heuristic, childrens)
         bestValue = math.min(bestValue, value)
       }
       bestValue
