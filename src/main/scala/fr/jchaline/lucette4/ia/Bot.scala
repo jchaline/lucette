@@ -18,8 +18,8 @@ class Bot {
    * @return le meilleur mouvement
    */
   def bestMove(board:DameBoard, player:Char, alpha:Int, beta:Int):Coord={
-    val moves = service.findMoves(board, player)
-    val boardValue = service.evaluate(board, player)
+    val moves = service.findMoves(board)
+    val boardValue = service.evaluate(board)
 
     moves(Random.nextInt(moves.size))
   }
@@ -30,22 +30,16 @@ class Bot {
    * @param depth profondeur maximum de recherche sur le noeud courant
    * @param α paramètre alpha de negamax
    * @param β paramètre beta de negamax
-   * @param player joueur concerné par l'évaluation du noeud
    * @return valeur du noeud
    */
-  def solve(node:DameBoard, depth:Int, α:Int, β:Int, player:Char):Int={
-    //Détermination de l'adversaire du joueur
-    val otherPlayer = player match{
-      case DameBoard.BLACK => DameBoard.WHITE
-      case DameBoard.WHITE => DameBoard.BLACK
-    }
+  def negamax(node:DameBoard, depth:Int, α:Int, β:Int):Int={
 
     //liste des mouvement disponibles sur le noeud courant
-    val moves = service.findMoves(node, otherPlayer)
+    val moves = service.findMoves(node)
 
     //recherche sur noeuds suivants si possible
     if (depth == 0 || moves.isEmpty ) {
-      service.evaluate(node, player)
+      service.evaluate(node)
     }
     else{
       var αLooped = α
@@ -55,7 +49,7 @@ class Bot {
       for(move <- moves){
         val nextNode = node.play(move)
 
-        val evaluation = -solve(nextNode, depth - 1, -β, -αLooped, otherPlayer)
+        val evaluation = -negamax(nextNode, depth - 1, -β, -αLooped)
         bestValue = math.max( bestValue, evaluation )
         αLooped = math.max( αLooped, evaluation )
 
@@ -70,38 +64,27 @@ class Bot {
    * Implémentation de min max
    * @return valeur du noeud courant
    */
-  def minmax(node:DameBoard, depth:Int,maximizingPlayer:Boolean, player:Char,
-             heuristic:(DameBoard, Char) => Int,
-             children:(DameBoard, Char) => List[DameBoard]):Int= {
-
-    //détermination du joueur adverse
-    val otherPlayer = player match{
-      case DameBoard.BLACK => DameBoard.WHITE
-      case DameBoard.WHITE => DameBoard.BLACK
-    }
+  def minmax(node:DameBoard, depth:Int,maximizingPlayer:Boolean,
+             heuristic:(DameBoard) => Int,
+             children:(DameBoard) => List[DameBoard]):Int= {
 
     //cas d'arrêt : plus de fils ou limite technique
-    if (depth == 0 || children(node, otherPlayer).isEmpty) {
-      heuristic(node, player)
+    if (depth == 0 || children(node).isEmpty) {
+      heuristic(node)
     }
     //deux cas, chercher la valeur la plus grande ou la plus faible
-    //TODO:bug car doublon entre le role de maximizing et l'alternance du joueur
-    //problème : besoin de savoir qui joue pour avoir sa liste de coup possible
-    //solution : est-ce qu'il faut faire porter le tour du joueur par le plateau ?
-    //ainsi la recherche de coup et l'évaluation n'auront qu'un parametre, le plateau
-    //cohérent dans la plupart des jeux de plateaux ?
     else if (maximizingPlayer) {
       var bestValue = Int.MinValue
-      for (child <- children(node, otherPlayer)) {
-        val value = minmax(child, depth - 1, !maximizingPlayer, otherPlayer, heuristic, children)
+      for (child <- children(node)) {
+        val value = minmax(child, depth - 1, !maximizingPlayer, heuristic, children)
         bestValue = math.max(bestValue, value)
       }
       bestValue
     }
     else {
       var bestValue = Int.MaxValue
-      for (child <- children(node, otherPlayer)) {
-        val value = minmax(child, depth - 1, !maximizingPlayer, otherPlayer, heuristic, children)
+      for (child <- children(node)) {
+        val value = minmax(child, depth - 1, !maximizingPlayer, heuristic, children)
         bestValue = math.min(bestValue, value)
       }
       bestValue

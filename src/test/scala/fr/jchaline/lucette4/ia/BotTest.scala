@@ -25,7 +25,7 @@ class BotTest {
     val player = DameBoard.BLACK
 
     val alicia = new Bot()
-    val moves = service.findMoves(board,player)
+    val moves = service.findMoves(board)
     val bestMove = alicia.bestMove(board, player, Int.MaxValue, Int.MinValue)
     if(!moves.isEmpty){
       assertNotNull(bestMove)
@@ -37,13 +37,13 @@ class BotTest {
    * Evaluation d'un plateau en tant que noeud et en fonction de ses sous noeuds via negamax
    */
   @Test
-  def solveTest(){
+  def negamaxTest(){
     val board = new DameBoard()
 
     val player = DameBoard.BLACK
 
     //compute value with negamax
-    val value = alicia.solve(board, 3, Int.MaxValue, Int.MinValue, player)
+    val value = alicia.negamax(board, 3, Int.MaxValue, Int.MinValue)
 
     assertTrue(value == 0)
   }
@@ -56,9 +56,9 @@ class BotTest {
     val board = new DameBoard()
     val player = DameBoard.BLACK
 
-    val value = alicia.minmax(board, 3, true, player,
-      (b:DameBoard, p:  Char) => new DameBoardService().evaluate(b, p),
-      (b:DameBoard, p:Char)=> new DameBoardService().findMoves(b,p).map{b.play(_)})
+    val value = alicia.minmax(board, 3, true,
+      (b:DameBoard) => new DameBoardService().evaluate(b),
+      (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)})
 
     assertTrue(value == 0)
   }

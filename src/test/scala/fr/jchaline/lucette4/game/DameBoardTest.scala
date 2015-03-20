@@ -16,18 +16,18 @@ class DameBoardTest {
     val board = new DameBoard()
 
     //assert value before mouvement
-    assertTrue(board.read(0,3).equals(DameBoard.BLACK))
-    assertTrue(board.read(1,4).equals(DameBoard.EMPTY))
+    assertTrue(board.read(1,3).equals(DameBoard.WHITE))
+    assertTrue(board.read(2,4).equals(DameBoard.EMPTY))
 
-    val moved = board.play(Coord(0,3,1,4))
+    val moved = board.play(Coord(1,3,2,4))
 
     //assert immutabilité
-    assertTrue(board.read(0,3).equals(DameBoard.BLACK))
-    assertTrue(board.read(1,4).equals(DameBoard.EMPTY))
+    assertTrue(board.read(1,3).equals(DameBoard.WHITE))
+    assertTrue(board.read(2,4).equals(DameBoard.EMPTY))
 
     //assert mouvement sur nouveau plateau
-    assertTrue(moved.read(0,3).equals(DameBoard.EMPTY))
-    assertTrue(moved.read(1,4).equals(DameBoard.BLACK))
+    assertTrue(moved.read(1,3).equals(DameBoard.EMPTY))
+    assertTrue(moved.read(2,4).equals(DameBoard.WHITE))
 
     //assert que le nouveau plateau n'est pas le même
     assertFalse( moved.equals( board ) )
@@ -51,10 +51,10 @@ class DameBoardTest {
       Array('o','_','o','_','o','_','o','_','o','_')
     )
 
-    val board = new DameBoard(initCases, List[DameBoard]())
-    val secondBoard = board.play(Coord(0,3,2,5,2,5,4,7,4,7,6,5))
+    val board = new DameBoard(initCases, DameBoard.BLACK)
+    val secondBoard = board.play(Coord(0,6,2,3,2,3,4,2,4,2,6,4))
 
-    assertTrue(secondBoard.read(6,5).equals(DameBoard.BLACK))
+    assertTrue(secondBoard.read(6,4).equals(DameBoard.BLACK))
     assertTrue(secondBoard.read(1,4).equals(DameBoard.EMPTY))
     assertTrue(secondBoard.read(3,6).equals(DameBoard.EMPTY))
   }
@@ -70,10 +70,10 @@ class DameBoardTest {
 
     //init du plateau et déplacement de pions pour permettre une prise simple
     val board = new DameBoard()
-    val secondBoard = board.play(Coord(0,3,1,4)).play(Coord(3,6,2,5))
+    val secondBoard = board.play(Coord(3,3,2,4)).play(Coord(0,6,1,5))
 
-    val thirdBoard = secondBoard.play(Coord(1,4,3,6))
-    assertTrue(thirdBoard.read(2,5).equals(DameBoard.EMPTY))
+    val thirdBoard = secondBoard.play(Coord(2,4,0,6))
+    assertTrue(thirdBoard.read(1,5).equals(DameBoard.EMPTY))
   }
 
   /**
@@ -83,17 +83,20 @@ class DameBoardTest {
   def playTestParent(){
     val board = new DameBoard()
 
-    val moved = board.play( new Coord(0,3,1,4))
+    val moved = board.play(Coord(3,3,2,4))
 
     assertFalse(moved.equals(board))
-    assertTrue(moved.previous().equals(board))
+    assertTrue(moved.previous() match{
+      case Some(b) => b.equals(board)
+      case _ => false
+    })
   }
 
   /**
    * Test la transformation en String d'un plateau
    */
   @Test
-  def toStringTest() {
+  def toStringTest(){
     val board = new DameBoard()
 
     val boardStr = board.toString()
@@ -132,17 +135,17 @@ class DameBoardTest {
     val board = new DameBoard()
 
     //case en haut a gauche
-    assertTrue(board.read(0,0).equals(DameBoard.EMPTY))
+    assertTrue(board.read(0,0).equals(DameBoard.WHITE))
     //en bas a droite
-    assertTrue(board.read(9,9).equals(DameBoard.EMPTY))
+    assertTrue(board.read(9,9).equals(DameBoard.BLACK))
     //deuxieme case en haut a gauche
-    assertTrue(board.read(1,0).equals(DameBoard.BLACK))
+    assertTrue(board.read(1,0).equals(DameBoard.EMPTY))
     //premiere case de la deuxieme ligne
-    assertTrue(board.read(0,1).equals(DameBoard.BLACK))
+    assertTrue(board.read(0,1).equals(DameBoard.EMPTY))
     //premiere case avec un blanc
-    assertTrue(board.read(1,6).equals(DameBoard.WHITE))
+    assertTrue(board.read(1,6).equals(DameBoard.EMPTY))
 
-    assertTrue(board.read(0,7).equals(DameBoard.WHITE))
+    assertTrue(board.read(0,7).equals(DameBoard.EMPTY))
   }
 
 }

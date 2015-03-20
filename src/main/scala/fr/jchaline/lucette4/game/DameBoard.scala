@@ -1,5 +1,7 @@
 package fr.jchaline.lucette4.game
 
+import sun.font.TrueTypeFont
+
 /**
  * Plateau pour le jeu de Dame, immutable
  * Noirs (x) en haut, blancs (o) en bas
@@ -9,45 +11,42 @@ package fr.jchaline.lucette4.game
  *
  * Représentation avec coordonnés :
  *
- * 0 _ x _ x _ x _ x _ x
- * 1 x _ x _ x _ x _ x _
- * 2 _ x _ x _ x _ x _ x
- * 3 x _ x _ x _ x _ x _
- * 4 _ _ _ _ _ _ _ _ _ _
+ * 9 _ x _ x _ x _ x _ x
+ * 8 x _ x _ x _ x _ x _
+ * 7 _ x _ x _ x _ x _ x
+ * 6 x _ x _ x _ x _ x _
  * 5 _ _ _ _ _ _ _ _ _ _
- * 6 _ o _ o _ o _ o _ o
- * 7 o _ o _ o _ o _ o _
- * 8 _ o _ o _ o _ o _ o
- * 9 o _ o _ o _ o _ o _
+ * 4 _ _ _ _ _ _ _ _ _ _
+ * 3 _ o _ o _ o _ o _ o
+ * 2 o _ o _ o _ o _ o _
+ * 1 _ o _ o _ o _ o _ o
+ * 0 o _ o _ o _ o _ o _
  * _ 0 1 2 3 4 5 6 7 8 9
+ *
+ *
+ * @param _cases contenu du plateau, liste de colonnes
+ * @param _previous noeud précédent, Option[DameBoard]
+ * @param _player joueur dont c'est le tour
  */
-class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], val _player:Char=DameBoard.WHITE) {
+class DameBoard(
+                 val _cases : Array[Array[Char]]=Array(
+                   Array('_','x','_','x','_','x','_','x','_','x'),
+                   Array('x','_','x','_','x','_','x','_','x','_'),
+                   Array('_','x','_','x','_','x','_','x','_','x'),
+                   Array('x','_','x','_','x','_','x','_','x','_'),
+                   Array('_','_','_','_','_','_','_','_','_','_'),
+                   Array('_','_','_','_','_','_','_','_','_','_'),
+                   Array('_','o','_','o','_','o','_','o','_','o'),
+                   Array('o','_','o','_','o','_','o','_','o','_'),
+                   Array('_','o','_','o','_','o','_','o','_','o'),
+                   Array('o','_','o','_','o','_','o','_','o','_')
+                 ),
+                 val _player:Char=DameBoard.WHITE,
+                 val _previous:Option[DameBoard]=None) {
 
   val DIM_X = 10
   val DIM_Y = 10
 
-  /**
-   * Constructeur par defaut du DameBoard, avec les cases prêtes pour une nouvelle partie
-   * et une liste de parent vide
-   */
-  def this()={
-    this(
-      Array(
-        Array('_','x','_','x','_','x','_','x','_','x'),
-        Array('x','_','x','_','x','_','x','_','x','_'),
-        Array('_','x','_','x','_','x','_','x','_','x'),
-        Array('x','_','x','_','x','_','x','_','x','_'),
-        Array('_','_','_','_','_','_','_','_','_','_'),
-        Array('_','_','_','_','_','_','_','_','_','_'),
-        Array('_','o','_','o','_','o','_','o','_','o'),
-        Array('o','_','o','_','o','_','o','_','o','_'),
-        Array('_','o','_','o','_','o','_','o','_','o'),
-        Array('o','_','o','_','o','_','o','_','o','_')
-      ),
-      List[DameBoard](),
-      DameBoard.WHITE
-    )
-  }
 
   /**
    * Parse une chaine de caractère et retourne l'objet DameBoard correspondant
@@ -66,12 +65,12 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], 
    * @param cases plateau avant le déplacement
    * @return le nouveau plateau suite au mouvement
    */
-  private def moveWithCoord(posList:List[Coord], cases : Array[Array[Char]]):DameBoard={
+  private def moveWithCoord(posList:List[Coord], cases : Array[Array[Char]], keepTurn:Boolean):DameBoard={
     if(posList.size>0){
-      moveWithCoord(posList.slice(1,posList.size),moveWithPos(cases, posList(0)._positions(0), posList(0)._positions(1), posList(0)._positions(2), posList(0)._positions(3)))
+      moveWithCoord(posList.slice(1,posList.size),moveWithPos(cases, posList(0)._positions(0), posList(0)._positions(1), posList(0)._positions(2), posList(0)._positions(3)),keepTurn)
     }
     else{
-      new DameBoard(cases, _previous:+this, DameBoard.opponent(_player))
+      new DameBoard(cases, if(keepTurn) _player else DameBoard.opponent(_player), Some(this))
     }
   }
 
@@ -86,14 +85,14 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], 
    */
   private def moveWithPos(cases : Array[Array[Char]], x1:Int,y1:Int,x2:Int,y2:Int)={
     val clone = cases.map(_.clone())
-    val value = clone(y1)(x1)
-    clone(y1)(x1) = cases(y2)(x2)
-    clone(y2)(x2) = value
+    val value = clone(DIM_Y-1-y1)(x1)
+    clone(DIM_Y-1-y1)(x1) = cases(DIM_Y-1-y2)(x2)
+    clone(DIM_Y-1-y2)(x2) = value
 
     //si distance > 1, pris des cases intermédiaires
     val distance = Math.abs(x1 - x2)
     if(distance>1){
-      clone((y2+y1)/2)((x1+x2)/2) = DameBoard.EMPTY
+      clone((DIM_Y-1-y2+DIM_Y-1-y1)/2)((x1+x2)/2) = DameBoard.EMPTY
     }
     clone
   }
@@ -103,26 +102,28 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], 
    * Réalise un appel chainé en cas de prise multiple ie plus de 2 points
    * Attention, pas de controle de cohérence
    * @param pos positions du mouvement
+   * @param keepTurn true pour ne pas changer le tour, false pour passer à l'autre joueur
    * @return le nouveau plateau suite au mouvement
    */
-  def play(pos:Coord):DameBoard={
-    moveWithCoord(pos.split(), _cases)
+  def play(pos:Coord, keepTurn:Boolean=false):DameBoard={
+    moveWithCoord(pos.split(), _cases, keepTurn)
   }
 
   /**
     * Renvoi le plateau précédent s'il existe
    * @return le plateau précédent
    */
-  def previous()={
-    _previous.last
+  def previous():Option[DameBoard]={
+    _previous
   }
 
   /**
     * Vrai si un précédent existe
    * @return True si un précédent existe, False sinon
    */
-  def hasPrevious()={
-    _previous.size>0
+  def hasPrevious()= _previous match{
+    case Some(p) => true
+    case _ => false
   }
 
   /**
@@ -132,7 +133,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], 
    * @return la valeur de la case lue
    */
   def read(x:Int,y:Int):Char={
-    _cases(y)(x)
+    _cases(DIM_Y-1-y)(x)
   }
 
   /**
@@ -164,9 +165,9 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], 
   def niceString()={
     var nice = ""
     for(y <- 0 to 9){
-      nice = nice + y
+      nice = nice + (DIM_Y-1-y)
       for(x <- 0 to 9){
-        nice = nice + " " + read(x,y)
+        nice = nice + " " + read(x,DIM_Y-1-y)
       }
       nice = nice + '\n'
     }

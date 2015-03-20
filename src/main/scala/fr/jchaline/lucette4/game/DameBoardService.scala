@@ -21,10 +21,9 @@ class DameBoardService {
    * La plupart des coups comportent 1 tuple de coordonnées x,y
    * mais les prises multiples seront de la forme (x1,y1),(x2,y2),...,(xn,yn)
    * @param board le plateau pour la recherche de coups
-   * @param player le joueur
    * @return la liste des mouvements
    */
-  def findMoves(board : DameBoard, player: Char, onlyCatch:Boolean=false):List[Coord] = {
+  def findMoves(board : DameBoard, onlyCatch:Boolean=false):List[Coord] = {
     var moves = mutable.MutableList[Coord]()
 
     for (row <- 0 to DIM_X - 1) {
@@ -32,7 +31,7 @@ class DameBoardService {
 
         val coord = Coord(column, row)
         //only the turn color can make a move
-        if (board.read(coord).equals(player)) {
+        if (board.read(coord).equals(board._player)) {
 
           //check what's around the pawn.
           moves ++= checkAllMoves(board, coord, onlyCatch)
@@ -71,7 +70,6 @@ class DameBoardService {
     val emptyList = List[Coord]()
     val deltaX =  if(right) 1 else -1
     val deltaY =  if(onwar) 1 else -1
-    val player = board.read(coord)
 
     //case à proximité, parmis les différent sens accessible
     val nextWard = Coord(coord.get(0) + deltaX, coord.get(1) + deltaY)
@@ -90,7 +88,7 @@ class DameBoardService {
       }
       //sinon, si case adverse, vérification de la case plus loin
         //recherche recursive pour trouver les différents chemins
-      else if (!board.read(nextWard).equals(player)) {
+      else if (!board.read(nextWard).equals(board._player)) {
 
         //cible permettant une prise
         val nextCatch = Coord(coord.get(0) + 2*deltaX , coord.get(1) + 2*deltaY)
@@ -100,7 +98,7 @@ class DameBoardService {
           val move = coord++nextCatch
 
           //à partir de là, recherche des autres mouvement de prise disponibles, recursivité
-          val otherCatchList = checkAllMoves(board.play(move), nextCatch, true)
+          val otherCatchList = checkAllMoves(board.play(move, true), nextCatch, true)
 
           //si d'autres prises possibles, concatenations
           if(otherCatchList.size>0){
@@ -131,13 +129,13 @@ class DameBoardService {
    * @param board plateau à évaluer
    * @return la valeur
    */
-  def evaluate(board:DameBoard, player:Char)={
+  def evaluate(board:DameBoard)={
     var value = 0
     //analyse des lignes
     for (x <- 0 to DIM_X - 1) {
       //analyse des colonnes de chaque ligne
       for (y <- 0 to DIM_Y - 1) {
-        value = value + evaluateWard(board, x, y, player)
+        value = value + evaluateWard(board, x, y)
       }
     }
     value
@@ -148,14 +146,13 @@ class DameBoardService {
    * @param board plateau de jeu
    * @param x abscisse de la case
    * @param y ordonnée de la case
-   * @param player joueur concerné par l'évaluation
    * @return la valeur de la case sur ce plateau
    */
-  def evaluateWard(board:DameBoard, x:Int, y:Int, player:Char)={
+  def evaluateWard(board:DameBoard, x:Int, y:Int)={
     board.read(x,y) match {
-      case `player` => 1
-      case DameBoard.EMPTY => 0
-      case _ => -1
+      case DameBoard.WHITE => 1
+      case DameBoard.BLACK => -1
+      case _ => 0
     }
   }
 }
