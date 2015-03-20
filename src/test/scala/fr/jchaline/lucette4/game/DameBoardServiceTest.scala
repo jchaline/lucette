@@ -118,22 +118,21 @@ class DameBoardServiceTest {
   def recursiveRandomPlayTest(){
     val board = new DameBoard()
 
-    recursirvePlay(board, true, 0)
+    recursirvePlay(board, DameBoard.WHITE, 0)
   }
 
 
   /**
    * Joue des coups aléatoire recursivement
    * @param board plateau de jeu
-   * @param black joueur courant (black/white)
+   * @param player joueur courant
    * @param turn numéro du tour actuel
    */
-  private def recursirvePlay(board : DameBoard, black:Boolean, turn:Int):Int ={
-    val player = if(black) DameBoard.BLACK else DameBoard.WHITE
+  private def recursirvePlay(board : DameBoard, player:Char, turn:Int):Int ={
     val moves = service.findMoves(board, player)
 
     if(moves.size>0 && turn<1000){
-      recursirvePlay(board.play(moves(Random.nextInt(moves.size))), !black, turn+1)
+      recursirvePlay(board.play(moves(Random.nextInt(moves.size))), DameBoard.opponent(player), turn+1)
     }
     else{
       println(turn)

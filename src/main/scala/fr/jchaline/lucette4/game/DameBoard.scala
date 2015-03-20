@@ -21,7 +21,7 @@ package fr.jchaline.lucette4.game
  * 9 o _ o _ o _ o _ o _
  * _ 0 1 2 3 4 5 6 7 8 9
  */
-class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) {
+class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard], val _player:Char=DameBoard.WHITE) {
 
   val DIM_X = 10
   val DIM_Y = 10
@@ -44,7 +44,8 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
         Array('_','o','_','o','_','o','_','o','_','o'),
         Array('o','_','o','_','o','_','o','_','o','_')
       ),
-      List[DameBoard]()
+      List[DameBoard](),
+      DameBoard.WHITE
     )
   }
 
@@ -70,7 +71,7 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
       moveWithCoord(posList.slice(1,posList.size),moveWithPos(cases, posList(0)._positions(0), posList(0)._positions(1), posList(0)._positions(2), posList(0)._positions(3)))
     }
     else{
-      new DameBoard(cases, _previous:+this)
+      new DameBoard(cases, _previous:+this, DameBoard.opponent(_player))
     }
   }
 
@@ -179,9 +180,6 @@ class DameBoard(val _cases : Array[Array[Char]], val _previous:List[DameBoard]) 
    * @return true si présent, false sinon
    */
   def inBoundary(coord:Coord) = (coord._positions(0) < DIM_X && coord._positions(0) >= 0 && coord._positions(1) < DIM_Y && coord._positions(1) >= 0)
-
-
-
 }
 
 /**
@@ -191,4 +189,14 @@ object DameBoard{
   val EMPTY = '_'
   val BLACK = 'x'
   val WHITE = 'o'
+
+  /**
+   * Détermine quel est l'adversaire d'un joueur
+   * @param player joueur
+   * @return adversaire
+   */
+  def opponent(player:Char)= player match{
+    case DameBoard.BLACK => DameBoard.WHITE
+    case DameBoard.WHITE => DameBoard.BLACK
+  }
 }
