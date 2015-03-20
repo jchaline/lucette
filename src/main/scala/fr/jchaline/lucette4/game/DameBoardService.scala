@@ -124,8 +124,8 @@ class DameBoardService {
 
   /**
    * Evalue la valeur d'un plateau
-   * Plus la valeur est elevé, plus elle avantage le joueur NOIR
-   * Plus la valeur est faible, plus elle avantage le joueur BLANC
+   * Plus la valeur est elevé, plus elle avantage le joueur BLANC
+   * Plus la valeur est faible, plus elle avantage le joueur NOIR
    * @param board plateau à évaluer
    * @return la valeur
    */
