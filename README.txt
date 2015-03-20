@@ -1,7 +1,5 @@
-# lucette
-Jeu de dame
+Lucette : moteur de jeu, construit autour du jeu de dame (règles simplifiés pour l'instant)
+
 Scala
-full Immutable
-thread-safe
+Immutable
 negamax
-Akka
