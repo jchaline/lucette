@@ -5,6 +5,7 @@ import org.mockito.runners.MockitoJUnitRunner
 import org.junit.Assert._
 import org.junit._
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 @RunWith(classOf[MockitoJUnitRunner])
@@ -133,6 +134,7 @@ class DameBoardServiceTest {
    * @param board plateau de jeu
    * @param turn numéro du tour actuel
    */
+  @tailrec
   private def recursirvePlay(board : DameBoard, turn:Int):Int ={
     val moves = service.findMoves(board)
 
@@ -140,8 +142,6 @@ class DameBoardServiceTest {
       recursirvePlay(board.play(moves(Random.nextInt(moves.size))), turn+1)
     }
     else{
-      println(turn)
-      println(board)
       turn
     }
   }
