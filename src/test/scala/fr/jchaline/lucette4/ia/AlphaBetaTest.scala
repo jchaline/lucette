@@ -7,14 +7,10 @@ import org.junit.Assert._
 import org.junit._
 
 @RunWith(classOf[MockitoJUnitRunner])
-class BotTest {
+class AlphaBetaTest {
 
   val service = new DameBoardService()
-  val alicia = new Bot()
-
-  @Before
-  def setUp(){
-  }
+  val solver = new AlphaBeta()
 
   /**
    * Recherche du meilleur mouvement à jouer
@@ -22,11 +18,9 @@ class BotTest {
   @Test
   def bestMoveTest(){
     val board = new DameBoard()
-    val player = DameBoard.BLACK
 
-    val alicia = new Bot()
     val moves = service.findMoves(board)
-    val bestMove = alicia.bestMove(board, 3,
+    val bestMove = solver.bestMove(board, 3,
       (b:DameBoard) => new DameBoardService().evaluate(b),
       (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)})
 
@@ -36,33 +30,21 @@ class BotTest {
     }
   }
 
-  /**
-   * Evaluation d'un plateau en tant que noeud et en fonction de ses sous noeuds via negamax
-   */
-  @Test
-  def negamaxTest(){
-    val board = new DameBoard()
-
-    val player = DameBoard.BLACK
-
-    //compute value with negamax
-    val value = alicia.negamax(board, 3, Int.MaxValue, Int.MinValue)
-
-    assertTrue(value == 0)
-  }
 
   /**
-   * Test l'implémentation de minimax
+   * Test l'implémentation de alpha beta
    */
   @Test
   def minimaxTest(): Unit ={
     val board = new DameBoard()
-    val player = DameBoard.BLACK
 
-    val value = alicia.minimax(board, 3, true,
+    val value = solver.alphabeta(board, 3, true,
       (b:DameBoard) => new DameBoardService().evaluate(b),
-      (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)})
+      (b:DameBoard) => new DameBoardService().findMoves(b).map{b.play(_)},
+      Int.MinValue, Int.MaxValue)
 
     assertTrue(value == 0)
   }
+
+
 }
