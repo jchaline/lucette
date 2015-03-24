@@ -152,9 +152,7 @@ class DameBoard(
   override def toString()={
     _cases.foldLeft(""){
       (x,y) => x+(if(x.toString().length>0) "\n" else "")+
-        y.foldLeft(""){
-          (a,b) => a+(if(a.toString().length>0) "," else "")+b
-        }
+        y.mkString(",")
     }
   }
 
