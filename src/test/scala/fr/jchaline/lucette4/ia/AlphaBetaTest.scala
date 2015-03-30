@@ -35,7 +35,7 @@ class AlphaBetaTest {
    * Test l'implémentation de alpha beta
    */
   @Test
-  def minimaxTest(): Unit ={
+  def alphabetaTest(): Unit ={
     val board = new DameBoard()
 
     val value = solver.alphabeta(board, 3, true,

@@ -28,14 +28,14 @@ class AlphaBeta extends Solver {
    * @param depth profondeur maximum d'évaluation
    * @param heuristic fonction d'évaluation d'un noeud
    * @param childrens fonction permettant d'obtenir la liste des noeuds fils
-   * @param α paramètre alpha
-   * @param β paramètre beta
+   * @param alpha paramètre alpha
+   * @param beta paramètre beta
    * @return valeur du noeud courant
    */
   def alphabeta(node:DameBoard, depth:Int,maximizingScore:Boolean,
                 heuristic:(DameBoard) => Int,
                 childrens:(DameBoard) => List[DameBoard],
-                α:Int, β:Int):Int= {
+                alpha:Int, beta:Int):Int= {
 
     //cas d'arrêt : plus de fils ou limite technique
     if (depth == 0 || childrens(node).isEmpty) {
@@ -45,24 +45,24 @@ class AlphaBeta extends Solver {
       var result = 0
       if(!maximizingScore){
         result = Int.MaxValue
-        var βNew = β
+        var betaNew = beta
         childrens(node).foreach { child =>
-          result = math.min(result, alphabeta(child, depth - 1, !maximizingScore, heuristic, childrens, α, βNew))
-          if (α >= result) {
+          result = math.min(result, alphabeta(child, depth - 1, !maximizingScore, heuristic, childrens, alpha, betaNew))
+          if (alpha >= result) {
             return result
           }
-          βNew = math.min(βNew, result)
+          betaNew = math.min(betaNew, result)
         }
       }
       else{
         result = Int.MinValue
-        var αNew = α
+        var alphaNew = alpha
         childrens(node).foreach { child =>
-          result = math.min(result, alphabeta(child, depth - 1, !maximizingScore, heuristic, childrens, αNew, β))
-          if (result >= β) {
+          result = math.min(result, alphabeta(child, depth - 1, !maximizingScore, heuristic, childrens, alphaNew, beta))
+          if (result >= beta) {
             return result
           }
-          αNew = math.max(αNew, result)
+          alphaNew = math.max(alphaNew, result)
         }
       }
       result
