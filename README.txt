@@ -1,4 +1,4 @@
-Lucette : moteur de jeu, construit autour du jeu de dame (règles simplifiés pour l'instant)
+Lucette : moteur de jeu, construit autour du jeu de dame (règles simplifiées pour l'instant)
 
 Scala
 Immutable
